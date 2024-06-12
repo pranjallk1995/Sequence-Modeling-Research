@@ -1,0 +1,21 @@
+services:
+  gpu-test:
+    image: sequence-model/tensorflow:latest-gpu
+    container_name: sequnece-model
+    build:
+      dockerfile: ./Dockerfile
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ./src:/src
+    healthcheck:
+      test: nvidia-smi
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    command: sleep infinity
