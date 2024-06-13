@@ -18,7 +18,6 @@ class DefineXSModel():
         model.add(tf.keras.layers.Input(shape=cfg.MAX_INPUT_VECTOR_LENGTH))
         # model.add(tf.keras.layers.SimpleRNN(cfg.NUMBER_OF_RNN_NEURONS))
 
-
     def decoder(self) -> list:
         """ 
         function to define the decoder of a given vector
