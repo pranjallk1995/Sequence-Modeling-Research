@@ -1,5 +1,7 @@
 """ module to preprecess data before passing to the model """
 
+import os
+import json as js
 import pandas as pd
 import config as cfg
 import logging as lg
@@ -10,40 +12,44 @@ from typing import Set
 class PreProcess():
     """ class to perform preprocessing on the dataset """
 
-    def __init__(self, dataset_id: int, dataset: pd.DataFrame, vocab: Set[str]) -> None:
-        self.dataset = dataset
-        self.dataset_id = dataset_id
-        self.current_vocab = vocab
-        self.dataset_tensor = None
+    def __init__(self) -> None:
+        self.dataset = None
+        self.dataset_id = None
+        self.vocab = {}
+        self.word_count = 1
 
-    def normalize_dataset(self) -> tf.Tensor:
-        """ function to normalize the given dataset """
+    def drop_punctuations(self, sentence: str) -> str:
+        """ function to remove all punctuations """
 
-        lg.info("Performing normalization of the dataset chunk %d", self.dataset_id)
-        normalization_layer = tf.keras.layers.Normalization(axis=0)
-        normalization_layer.adapt(self.dataset_tensor)
-        return normalization_layer(self.dataset_tensor)
+        for punctuation in cfg.PUNCTUATIONS:
+            sentence = sentence.replace(punctuation, "")
+        return sentence
 
+    def build_vocab_and_vectorize(self, dataset: pd.DataFrame) -> None:
+        """ function to build the vocabulary from the dataset """
 
-    def vectorize_dataset(self) -> tf.Tensor:
-        """ function to perform vectorization of the dataset """
+        lg.debug("vocab: %s", self.vocab)
+        sentences = [
+            self.drop_punctuations(sentence.lower()).split(" ") for sentence in dataset["Sentence"]
+        ]
+        for sentence_index, sentence in enumerate(sentences):
+            for word_index, word in enumerate(sentence):
+                if self.vocab.get(word, None) is None:
+                    self.vocab[word] = self.word_count
+                    self.word_count += 1
+                sentences[sentence_index][word_index] = self.vocab.get(word)
+            if len(sentences[sentence_index]) < cfg.MAX_INPUT_VECTOR_LENGTH:
+                while len(sentences[sentence_index]) < cfg.MAX_INPUT_VECTOR_LENGTH:
+                    sentences[sentence_index].append(0)
+        return tf.convert_to_tensor(sentences)
 
-        lg.info("Performing vectorization of the dataset chunk %d", self.dataset_id)
-        vectorization_layer = tf.keras.layers.TextVectorization(
-            output_mode="int", output_sequence_length=cfg.MAX_INPUT_VECTOR_LENGTH,
-            name="vectorize", standardize="lower_and_strip_punctuation"
-        )
-        vectorization_layer.adapt(self.dataset)
-        self.current_vocab.update(vectorization_layer.get_vocabulary())
-        lg.debug("vocab: %s", self.current_vocab)
-        return len(self.current_vocab), vectorization_layer(self.dataset)
-
-    def run(self) -> tf.Tensor:
+    def run(self, dataset_id: int, dataset: pd.DataFrame, dataset_type: cfg.DatasetType) -> tf.Tensor:
         """ module entry point """
-        vocab_size, self.dataset_tensor = self.vectorize_dataset()
-        if self.dataset_tensor is not None:
-            lg.debug("tensor %s", self.dataset_tensor)
-            return vocab_size, self.normalize_dataset()
-        else:
-            lg.error("Could not vectorize the dataset")
-            return None
+
+        lg.info("Performing vectorization of the dataset chunk %d", dataset_id)
+        dataset_tensor = self.build_vocab_and_vectorize(dataset)
+        with open(os.path.join(cfg.TRAINING_DATA_PATH, dataset_type.value["json"]), "w", encoding="utf-8") as vocab_json:
+            js.dump(self.vocab, vocab_json, indent=4)
+        lg.debug("vocab size: %d", len(self.vocab))
+        lg.debug("tensor: %s", dataset_tensor)
+        return dataset_tensor

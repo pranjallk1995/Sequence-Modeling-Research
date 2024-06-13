@@ -11,6 +11,7 @@ class DefineXSModel():
     def __init__(self, dataset_vocab: Set[str]) -> None:
         self.vocab = dataset_vocab
         self.encoder_input = None
+        self.encoder_state = None
         self.encoder_output = None
 
     def encoder(self) -> tf.Tensor:
@@ -27,7 +28,7 @@ class DefineXSModel():
             input_dim=len(self.vocab), output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH
         )(self.encoder_input)
 
-        self.encoder_output = tf.keras.layers.SimpleRNN(
+        self.encoder_output, self.encoder_state = tf.keras.layers.SimpleRNN(
             cfg.NUMBER_OF_RNN_NEURONS
         )(encoder_embedding)
 
