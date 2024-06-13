@@ -9,7 +9,8 @@ from utils.preprocess import PreProcess
 from helpers.data_loader import DataLoader
 
 def load_and_process_data(dataset_type: cfg.DatasetType) -> Generator[tf.Tensor, None, None]:
-    """ asynchronous function to load any type of dataset and process it """
+    """ function to load any type of dataset and process it """
+
     data_chunk = DataLoader(dataset_type).run()
     for data_chunk_id, data_chunk_value in enumerate(data_chunk):
         lg.debug("loading dataset chunk %d from %s", data_chunk_id, dataset_type.value)
