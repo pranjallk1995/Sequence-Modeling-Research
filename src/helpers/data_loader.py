@@ -17,9 +17,9 @@ class DataLoader():
     def load_data(self) -> Generator[pd.DataFrame, None, None]:
         """ function to load the given dataset into memeory in chuncks and return it """
 
-        lg.info("loading dataset from %s", self.dataset_type.value)
+        lg.info("loading dataset from %s", self.dataset_type.value["text"])
         for data_chunk in pd.read_csv(
-                os.path.join(cfg.TRAINING_DATA_PATH, self.dataset_type.value),
+                os.path.join(cfg.TRAINING_DATA_PATH, self.dataset_type.value["text"]),
                 sep="\0", header=None, names=["Sentence"], chunksize=cfg.CHUNK_SIZE
             ):
             yield data_chunk
