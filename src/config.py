@@ -21,3 +21,5 @@ class DatasetType(Enum):
     MEDIUM = "medium_dataset.txt"
     LARGE = "large_dataset.txt"
     VERY_LARGE = "very_large_dataset.txt"
+
+CHUNK_SIZE = 3

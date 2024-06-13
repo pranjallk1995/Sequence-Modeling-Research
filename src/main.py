@@ -2,25 +2,32 @@
 
 import logging as lg
 import config as cfg
+import tensorflow as tf
 
+from typing import Generator
+from utils.preprocess import PreProcess
 from helpers.data_loader import DataLoader
 
-def load_and_process_data(dataset_type: cfg.DatasetType):
+def load_and_process_data(dataset_type: cfg.DatasetType) -> Generator[tf.Tensor, None, None]:
     """ asynchronous function to load any type of dataset and process it """
     data_chunk = DataLoader(dataset_type).load_data()
-    for chunk_id, chunck_data in enumerate(data_chunk):
-        lg.debug("loading dataset chunk %d from %s", chunk_id, dataset_type.value)
-        print(chunck_data)
+    for data_chunk_id, data_chunk_value in enumerate(data_chunk):
+        lg.debug("loading dataset chunk %d from %s", data_chunk_id, dataset_type.value)
+        lg.debug("data: %s", data_chunk_value)
+        yield PreProcess(dataset=data_chunk_value).vectorize_dataset()
 
 if __name__ == "__main__":
 
     # setting the logging level to display in console as INFO.
-    lg.basicConfig(level=lg.INFO)
+    lg.basicConfig(level=lg.INFO, filename="run.log", filemode="w")
+
+    # defining an encoder and decoder model
+
 
     # loading the dataset based on the type mentioned asynchronously then preprocess it.
-    load_and_process_data(cfg.DatasetType.SMALL)
+    for dataset_tensor in load_and_process_data(cfg.DatasetType.SMALL):
+        lg.debug("tensor: %s", dataset_tensor)
 
-    # define model
 
     # train model
 
