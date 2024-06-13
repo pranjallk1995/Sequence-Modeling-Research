@@ -1,9 +1,10 @@
 services:
   gpu-test:
     image: sequence-model/tensorflow:latest-gpu
-    container_name: sequnece-model
+    container_name: sequence-model
     build:
       dockerfile: ./Dockerfile
+    restart: unless-stopped
     deploy:
       resources:
         reservations:
