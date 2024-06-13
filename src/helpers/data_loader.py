@@ -20,6 +20,6 @@ class DataLoader():
         lg.info("loading dataset from %s", self.dataset_type.value)
         for data_chunk in pd.read_csv(
                 os.path.join(cfg.TRAINING_DATA_PATH, self.dataset_type.value),
-                sep="\0", header=None, chunksize=10000
+                sep="\0", header=None, names=["Sentence"], chunksize=cfg.CHUNK_SIZE
             ):
             yield data_chunk
