@@ -15,8 +15,10 @@ class DefineXSModel():
         into a vector space that holds the sentence context 
         """
         model = tf.keras.Sequential()
-        model.add(tf.keras.layers.Input(shape=cfg.MAX_INPUT_VECTOR_LENGTH))
-        # model.add(tf.keras.layers.SimpleRNN(cfg.NUMBER_OF_RNN_NEURONS))
+        model.add(tf.keras.layers.Embedding(
+            input_length=cfg.MAX_INPUT_VECTOR_LENGTH, output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH)
+        )
+        model.add(tf.keras.layers.SimpleRNN(cfg.NUMBER_OF_RNN_NEURONS))
 
     def decoder(self) -> list:
         """ 
