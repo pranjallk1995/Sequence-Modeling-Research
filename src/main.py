@@ -7,32 +7,35 @@ import config as cfg
 import tensorflow as tf
 
 from typing import Generator, Set
+from models.rnn import DefineXSModel
 from utils.preprocess import PreProcess
 from helpers.data_loader import DataLoader
 
-def load_and_process_data(dataset_type: cfg.DatasetType, current_vocab: Set[str]) -> Generator[tf.Tensor, None, None]:
+# SELECT THE DATASET
+# =============================================================================================
+current_dataset_type = cfg.DatasetType.SMALL                    # SMALL/MEDIUM/LARGE/VERY_LARGE
+# =============================================================================================
+
+def load_and_process_data(
+        dataset_type: cfg.DatasetType, vocab: Set[str]
+    ) -> Generator[tf.Tensor, None, None]:
     """ function to load any type of dataset and process it """
 
     data_chunk = DataLoader(dataset_type).run()
     for data_chunk_id, data_chunk_value in enumerate(data_chunk):
         lg.debug("loading dataset chunk %d from %s", data_chunk_id, dataset_type.value["text"])
         lg.debug("data: %s", data_chunk_value)
-        yield PreProcess(dataset_id=data_chunk_id, dataset=data_chunk_value, vocab=current_vocab).run()
+        yield PreProcess(dataset_id=data_chunk_id, dataset=data_chunk_value, vocab=vocab).run()
 
 if __name__ == "__main__":
 
     # setting the logging level to display in console as INFO.
     lg.basicConfig(level=lg.INFO, filename="run.log", filemode="w")
 
-    # STEP 0:
-    # defining an encoder and decoder model
-    # model =  
-
     # STEP 1:
     # loading the dataset based on the type mentioned and then preprocess it.
     
     current_vocab = set()
-    current_dataset_type = cfg.DatasetType.SMALL
     tensor_pickle_file = os.path.join(cfg.TRAINING_DATA_PATH, current_dataset_type.value["pickle"])
     
     if not os.path.exists(tensor_pickle_file):
@@ -45,6 +48,11 @@ if __name__ == "__main__":
         lg.warning("Tensors for the given data already exist. Using the existing values")
 
     # STEP 2:
+    # defining an encoder and decoder model based on the selected data the architecture is chosen
+
+    model = DefineXSModel.run()
+
+    # STEP 3:
     # loading preprocessed data and training the model.
 
     with open(tensor_pickle_file, "rb") as tensor_pickle:
@@ -55,6 +63,8 @@ if __name__ == "__main__":
         except EOFError:
             pass
 
+    # STEP 4:
     # plot results
 
+    # STEP 5:
     # test model
