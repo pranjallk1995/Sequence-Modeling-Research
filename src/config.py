@@ -4,16 +4,16 @@ import os
 
 from enum import Enum
 
-# ========================================================
+# =============================================================
 # paths
-# ========================================================
+# =============================================================
 
 TEST_DATA_PATH = os.path.join("data", "testing")
 TRAINING_DATA_PATH = os.path.join("data", "training")
 
-# ========================================================
+# =============================================================
 # data constants
-# ========================================================
+# =============================================================
 
 class DatasetType(Enum):
     """ class for storing file names of different datasets """
@@ -22,4 +22,11 @@ class DatasetType(Enum):
     LARGE = "large_dataset.txt"
     VERY_LARGE = "very_large_dataset.txt"
 
-CHUNK_SIZE = 3
+CHUNK_SIZE = 10000
+
+# =============================================================
+# model constants
+# =============================================================
+
+MAX_INPUT_VECTOR_LENGTH = 50
+NUMBER_OF_RNN_NEURONS = 20

@@ -23,3 +23,7 @@ class DataLoader():
                 sep="\0", header=None, names=["Sentence"], chunksize=cfg.CHUNK_SIZE
             ):
             yield data_chunk
+
+    def run(self) -> Generator[pd.DataFrame, None, None]:
+        """ module entry point """
+        return self.load_data()
