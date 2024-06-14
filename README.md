@@ -1,5 +1,5 @@
 # Sequence-Modeling-Research
-Experimentation grounds for sequence modeling
+Experimentation grounds for sequence modeling. **WORK IN PROGRESS**
 
 
 ## Dependencies
