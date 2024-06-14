@@ -22,25 +22,29 @@ class DatasetType(Enum):
         "text": "small_dataset.txt",
         "pickle": "small_dataset_pickle.pkl",
         "json": "small_dataset_vocab.json",
-        "model": "s_model.keras"
+        "model": "s_model.keras",
+        "fig": "s_model.html"
     }
     MEDIUM = {
         "text": "medium_dataset.txt",
         "pickle": "medium_dataset_pickle.pkl",
         "json": "medium_dataset_vocab.json",
-        "model": "m_model.keras"
+        "model": "m_model.keras",
+        "fig": "m_model.html"
     }
     LARGE = {
         "text": "large_dataset.txt",
         "pickle": "large_dataset_pickle.pkl",
         "json": "large_dataset_vocab.json",
-        "model": "l_model.keras"
+        "model": "l_model.keras",
+        "fig": "l_model.html"
     }
     VERY_LARGE = {
         "text": "very_large_dataset.txt",
         "pickle": "very_large_dataset_pickle.pkl",
         "json": "very_large_dataset_vocab.json",
-        "model": "vl_model.keras"
+        "model": "vl_model.keras",
+        "fig": "vl_model.html"
     }
 
 PUNCTUATIONS = ["?", "!", "'", ",", ".", ";", "\""]

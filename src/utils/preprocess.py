@@ -53,5 +53,6 @@ class PreProcess():
             os.path.join(cfg.TRAINING_DATA_PATH, dataset_type.value["json"]), "w", encoding="utf-8"
         ) as vocab_json:
             js.dump(self.vocab, vocab_json, indent=4)
+        lg.info("dataset vocabulory stored in %s", dataset_type.value["json"])
         lg.debug("vocab size: %d", len(self.vocab))
         return dataset_tensor

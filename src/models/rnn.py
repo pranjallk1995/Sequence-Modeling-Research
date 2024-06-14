@@ -4,13 +4,11 @@ import config as cfg
 import logging as lg
 import tensorflow as tf
 
-from typing import Set
-
 class DefineSModel():
     """ class to make encoder decoder model for generative sentence completion """
 
-    def __init__(self, dataset_vocab: dict) -> None:
-        self.vocab = dataset_vocab
+    def __init__(self, vocab_size: int) -> None:
+        self.vocab_size = vocab_size
         self.encoder_input = None
         self.encoder_state = None
         self.encoder_output = None
@@ -28,7 +26,7 @@ class DefineSModel():
 
         encoder_embedding = tf.keras.layers.Embedding(
             name="encoder_embedding",
-            input_dim=len(self.vocab), output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH
+            input_dim=self.vocab_size, output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH
         )(self.encoder_input)
 
         self.encoder_output, self.encoder_state = tf.keras.layers.SimpleRNN(
@@ -43,7 +41,7 @@ class DefineSModel():
 
         decoder_embedding = tf.keras.layers.Embedding(
             name="decoder_embedding",
-            input_dim=len(self.vocab), output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH
+            input_dim=self.vocab_size, output_dim=cfg.MAX_OUTPUT_EMBEDDED_LENGTH
         )(self.encoder_output)
 
         decoder_output = tf.keras.layers.SimpleRNN(
@@ -51,7 +49,7 @@ class DefineSModel():
         )(decoder_embedding, initial_state=self.encoder_state)
 
         self.final_output = tf.keras.layers.Dense(
-            units=cfg.MAX_INPUT_VECTOR_LENGTH-cfg.MAX_FEATURE_LENGTH, activation="relu"
+            units=cfg.MAX_INPUT_VECTOR_LENGTH-cfg.MAX_FEATURE_LENGTH, activation="sigmoid"
         )(decoder_output)
 
     def run(self) -> tf.keras.Model:
