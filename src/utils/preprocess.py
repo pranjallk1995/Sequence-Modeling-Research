@@ -28,7 +28,6 @@ class PreProcess():
     def build_vocab_and_vectorize(self, dataset: pd.DataFrame) -> None:
         """ function to build the vocabulary from the dataset """
 
-        lg.debug("vocab: %s", self.vocab)
         sentences = [
             self.drop_punctuations(sentence.lower()).split(" ") for sentence in dataset["Sentence"]
         ]
@@ -43,13 +42,16 @@ class PreProcess():
                     sentences[sentence_index].append(0)
         return tf.convert_to_tensor(sentences)
 
-    def run(self, dataset_id: int, dataset: pd.DataFrame, dataset_type: cfg.DatasetType) -> tf.Tensor:
+    def run(
+            self, dataset_id: int, dataset: pd.DataFrame, dataset_type: cfg.DatasetType
+        ) -> tf.Tensor:
         """ module entry point """
 
         lg.info("Performing vectorization of the dataset chunk %d", dataset_id)
         dataset_tensor = self.build_vocab_and_vectorize(dataset)
-        with open(os.path.join(cfg.TRAINING_DATA_PATH, dataset_type.value["json"]), "w", encoding="utf-8") as vocab_json:
+        with open(
+            os.path.join(cfg.TRAINING_DATA_PATH, dataset_type.value["json"]), "w", encoding="utf-8"
+        ) as vocab_json:
             js.dump(self.vocab, vocab_json, indent=4)
         lg.debug("vocab size: %d", len(self.vocab))
-        lg.debug("tensor: %s", dataset_tensor)
         return dataset_tensor
