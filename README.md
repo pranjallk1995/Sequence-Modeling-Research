@@ -11,7 +11,7 @@ Experimentation grounds for sequence modeling
 ## Run application
 
 1. Clone the Repo.
-2. Make sure you have docker containers with GPU access [link](https://github.com/pranjallk1995/GPU-Test) or comment the deploy property in docker-compose
+2. Make sure you have docker containers with GPU access [link](https://github.com/pranjallk1995/GPU-Test) or comment the deploy property in docker compose
 3. ```docker compose up -d```
 4. ```docker exec -it sequence-model bash```
 5. ```python3 -m main```
