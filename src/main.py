@@ -30,7 +30,7 @@ def load_and_process_data(dataset_type: cfg.DatasetType) -> Generator[tf.Tensor,
 
 if __name__ == "__main__":
 
-    # setting the logging level to display in console as INFO.
+    # setting the logging level to display.
     lg.basicConfig(level=lg.DEBUG, filename="run.log", filemode="w")
 
     tensor_pickle_file = os.path.join(cfg.TRAINING_DATA_PATH, current_dataset_type.value["pickle"])
